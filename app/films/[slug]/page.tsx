@@ -7,9 +7,10 @@ import { Star, Play, Facebook, Twitter } from 'lucide-react';
 import Link from 'next/link';
 import { FilmNavigation } from '@/components/film-navigation';
 import { FilmDetailClient } from '@/components/film-detail-client';
+import { Metadata, Viewport } from 'next';
 
 // This would normally come from a database or API
-const getFilmData = (slug: string) => {
+const getFilmData = async (slug: string) => {
   // Sample film data - expanded to include all possible slugs from hero slider
   const films = {
     'the-end-of-days': {
@@ -256,23 +257,43 @@ interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+};
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const film = await getFilmData(params.slug);
+
+  return {
+    title: `${film.title} | Film Details`,
+    description: film.description,
+    openGraph: {
+      title: film.title,
+      description: film.description,
+      images: [film.image],
+    },
+  };
+}
+
 // Generate static paths for all film slugs
 export async function generateStaticParams() {
-  const slugs = [
-    'the-end-of-days',
-    'locked-in',
-    'daylight',
-    'behind-enemy-lines',
-    'chance-encounter',
-    'the-directors-cut',
+  return [
+    { slug: 'the-end-of-days' },
+    { slug: 'locked-in' },
+    { slug: 'daylight' },
+    { slug: 'behind-enemy-lines' },
+    { slug: 'chance-encounter' },
+    { slug: 'the-directors-cut' },
   ];
-
-  return slugs.map((slug) => ({
-    slug,
-  }));
 }
 
 export default async function FilmDetailPage({ params }: PageProps) {
-  const film = getFilmData(params.slug);
+  const film = await getFilmData(params.slug);
   return <FilmDetailClient film={film} />;
 }
