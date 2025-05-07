@@ -1,4 +1,13 @@
 import { NewsTagClient } from '@/components/news-tag-client';
+import { Viewport } from 'next';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+};
 
 // This would normally come from a database or API
 const getTagData = (slug: string) => {

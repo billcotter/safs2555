@@ -3,25 +3,27 @@
 import { NewsArticle } from './news-article';
 
 interface NewsTagClientProps {
-  tag: string;
-  articles: Array<{
+  tag: {
     title: string;
-    category: string;
-    date: string;
-    image: string;
-    excerpt: string;
-    slug: string;
-  }>;
+    description: string;
+    articles: Array<{
+      title: string;
+      category: string;
+      date: string;
+      image: string;
+      excerpt: string;
+      slug: string;
+    }>;
+  };
 }
 
-export function NewsTagClient({ tag, articles }: NewsTagClientProps) {
+export function NewsTagClient({ tag }: NewsTagClientProps) {
   return (
     <div className='container mx-auto px-4 py-8'>
-      <h1 className='text-3xl font-bold mb-8'>
-        News tagged with &quot;{tag}&quot;
-      </h1>
+      <h1 className='text-3xl font-bold mb-4'>{tag.title}</h1>
+      <p className='text-muted-foreground mb-8'>{tag.description}</p>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-        {articles.map((article) => (
+        {tag.articles.map((article) => (
           <NewsArticle key={article.slug} {...article} />
         ))}
       </div>
