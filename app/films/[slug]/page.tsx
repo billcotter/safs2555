@@ -250,13 +250,6 @@ const getFilmData = async (slug: string) => {
   return films[slug as keyof typeof films];
 };
 
-interface PageProps {
-  params: {
-    slug: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -267,7 +260,9 @@ export const viewport: Viewport = {
 
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const film = await getFilmData(params.slug);
 
   return {
@@ -281,7 +276,6 @@ export async function generateMetadata({
   };
 }
 
-// Generate static paths for all film slugs
 export async function generateStaticParams() {
   return [
     { slug: 'the-end-of-days' },
@@ -293,7 +287,11 @@ export async function generateStaticParams() {
   ];
 }
 
-export default async function FilmDetailPage({ params }: PageProps) {
+export default async function FilmDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const film = await getFilmData(params.slug);
   return <FilmDetailClient film={film} />;
 }
